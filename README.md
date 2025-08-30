@@ -43,6 +43,34 @@ The condition file consists of two columns. Column 1 contains all samples, in th
 | GTEX-11DXY-0526-SM-5EGGQ | Healthy |
 | etc. | sample_type |
 
+To perform DESeq2 and GO analysis, the following packages must be installed. Run the following, if required, before running the DGEA scripts. Installation and code for GO analysis was used from mousepixel's GO_in_R.Rmd script available [here](https://github.com/mousepixels/sanbomics_scripts/blob/main/GO_in_R.Rmd) (mousepixel, 2022). 
+# Installation for PCA/Heatmap/DESeq2
+# Installation
+```R
+# Installation for DESeq
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("DESeq2")
+BiocManager::install("vsn")
+
+# Installation for GO
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("clusterProfiler")
+
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("AnnotationDbi")
+
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+
+BiocManager::install("org.Hs.eg.db")
+```
+
 Healthy samples were compared against cancer samples using the script:. To generate a PCA plot for healthy Vs cancer with points coloured by stage this script was used.
 
 Stages I/II/III/IV Vs healthy scripts are accessible in this folder.
@@ -111,8 +139,8 @@ scp ada:/gpfs01/home/mbyle1/LIFE4137/splice/isoform_counts.txt" ./
 These isoforms were filtered for genes of interest using this script. The file from the filtered genes script was then used to peform survival analysis of isoforms from genes of interest. These scripts are located in this folder.
 
 
-
 # Acknowledgements
 I would like to thank Dr Heshmat Borhani for providing univariate Kaplan-Meier curve survival analysis code.
 
 # References
+mousepixel (2022) Github. sanbomics_scripts. Available at: https://github.com/mousepixels/sanbomics_scripts/blob/main/GO_in_R.Rmd [Accessed 30/08/2025]
