@@ -4,7 +4,7 @@
 [Getting started with R](#Getting-started-with-R) <br/>
 [Filter samples](#filter-samples) <br/>
 ### Differential gene expression analysis (DGEA)
-[DGEA](#Differential-Gene-Expression-Analysis-(DGEA)) <br/>
+[DGEA](#Differential-Gene-Expression-Analysis) <br/>
 ### Survival analysis
 [Univariate Kaplan-Meier curves](#Univariate-Kaplan-Meier-Curves) <br/>
 [Multivariate Forest plots](#Multivariate-forest-plots) <br/>
@@ -28,9 +28,9 @@ Healthy sample RNAseq TOIL RSEM expected counts were obtained from the [GTEx coh
 
 Samples were filtered using the scripts within the [filter_samples folder](https://github.com/Leah31115/hcc_biomarker_identifier/tree/main/filter_samples). Paired Solid Tissue Normal (STN) healthy samples (ID ending -11) were paired to the cancer sample (ID ending -01) by their TCGA ID.
 
-## Differential Gene Expression Analysis (DGEA)
+## Differential Gene Expression Analysis
 Some of the code written within the UoN LIFE4136 Group Project 2 was used and expanded upon in this analysis. In which I thank my previous group members Thomas Mclaughlin and Areeba Salman for their past collaborations.
-For Deseq2, a DESeq Data Set (DDS) object is made which requires a count data file as well as a condition file. The count data files for all DGEAs are generated from the [filter samples section](#Filter-samples).
+For Deseq2, a DESeq Data Set (DDS) object is made which requires a count data file as well as a condition file. The count data files for all Differential Gene Expression Analyses (DGEAs) are generated from the [filter samples section](#Filter-samples).
 The count data file consists of the gene raw counts for each sample. This file contains all gene Ensembl IDs in the first column. All remaining columns contain each sample with their gene count values supplied for each gene, as exampled below:
 | EnsemblID | GTEX-1192X-1026-SM-5H12P | GTEX-11DXY-0526-SM-5EGGQ | etc. |
 | --- | --- | --- | --- |
