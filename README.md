@@ -5,7 +5,6 @@
 [Filter samples](#filter-samples) <br/>
 ### Differential gene expression analysis (DGEA)
 [DGEA](#Differential-Gene-Expression-Analysis-(DGEA)) <br/>
-[Top differential genes expressed (DGE)](#Top-differential-genes-expressed (DGE)) <br/>
 ### Survival analysis
 [Univariate Kaplan-Meier curves](#Univariate-Kaplan-Meier-Curves) <br/>
 [Multivariate Forest plots](#Multivariate-forest-plots) <br/>
@@ -25,10 +24,13 @@ install.packages("package_name")
 ## Filter samples 
 RNAseq STAR gene counts for The Cancer Genome Atlas (TCGA) cancer samples from the GDC TCGA Liver Cancer (LIHC) cohort were downloaded from UCSC Xena [here](https://xenabrowser.net/datapages/?dataset=TCGA-LIHC.star_counts.tsv&host=https%3A%2F%2Fgdc.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) (file TCGA-LIHC.star_counts.tsv.gz, version 05-09-2024, 38.9 MB). TCGA cancer phenotype metadata, from the same cohort, was also obtained from the UCSC Xena platform [here](https://xenabrowser.net/datapages/?dataset=TCGA-LIHC.clinical.tsv&host=https%3A%2F%2Fgdc.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) (file TCGA-LIHC.clinical.tsv.gz, version 09-07-2024, 92.5 KB).
 
-Healthy sample RNAseq TOIL RSEM expected counts were obtained from the [GTEx cohort](https://xenabrowser.net/datapages/?dataset=gtex_gene_expected_count&host=https%3A%2F%2Ftoil.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) in UCSC Xena (file gtex_gene_expected_count.gz, version 2016-05-19, 476 MB). Healthy metadata was also obtained from UCSC Xena [here](https://xenabrowser.net/datapages/?dataset=GTEX_phenotype&host=https%3A%2F%2Ftoil.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) (file GTEX_phenotype.gz, version 2016-05-18, 80.5 KB). 
+Healthy sample RNAseq TOIL RSEM expected counts were obtained from the [GTEx cohort](https://xenabrowser.net/datapages/?dataset=gtex_gene_expected_count&host=https%3A%2F%2Ftoil.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) in UCSC Xena (file gtex_gene_expected_count.gz, version 2016-05-19, 476 MB). Healthy metadata was also obtained from UCSC Xena [here](https://xenabrowser.net/datapages/?dataset=GTEX_phenotype&host=https%3A%2F%2Ftoil.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) (file GTEX_phenotype.gz, version 2016-05-18, 80.5 KB).
+
+Samples were filtered using the scripts within the [filter_samples folder](https://github.com/Leah31115/hcc_biomarker_identifier/tree/main/filter_samples). Paired Solid Tissue Normal (STN) healthy samples (ID ending -11) were paired to the cancer sample (ID ending -01) by their TCGA ID.
 
 ## Differential Gene Expression Analysis (DGEA)
-For Deseq2, a DESeq Data Set (DDS) object is made which requires a count data file as well as a condition file. The count data files for all DGEAs are generated from #Filter-samples
+Some of the code written within the UoN LIFE4136 Group Project 2 was used and expanded upon in this analysis. In which I thank my previous group members Thomas Mclaughlin and Areeba Salman for their past collaborations.
+For Deseq2, a DESeq Data Set (DDS) object is made which requires a count data file as well as a condition file. The count data files for all DGEAs are generated from the [filter samples section](#Filter-samples).
 The count data file consists of the gene raw counts for each sample. This file contains all gene Ensembl IDs in the first column. All remaining columns contain each sample with their gene count values supplied for each gene, as exampled below:
 | EnsemblID | GTEX-1192X-1026-SM-5H12P | GTEX-11DXY-0526-SM-5EGGQ | etc. |
 | --- | --- | --- | --- |
@@ -71,29 +73,26 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("org.Hs.eg.db")
 ```
 
-Healthy samples were compared against cancer samples using the script:. To generate a PCA plot for healthy Vs cancer with points coloured by stage this script was used.
+All DGEAs were run using the scripts in the [DGEA folder](https://github.com/Leah31115/hcc_biomarker_identifier/tree/main/DGEA). Healthy samples were compared against cancer samples using the script [2025-08-11_tcga_vs_healthy_deseq.R](https://github.com/Leah31115/hcc_biomarker_identifier/blob/main/DGEA/cancer_vs_healthy/2025-08-11_tcga_vs_healthy_deseq.R). Whereas the [2025-08-11_hstages_deseq.R](https://github.com/Leah31115/hcc_biomarker_identifier/blob/main/DGEA/cancer_vs_healthy/2025-08-11_hstages_deseq.R) script generates a PCA plot for healthy Vs cancer with points coloured by stage.
 
-Stages I/II/III/IV Vs healthy scripts are accessible in this folder.
+Stages I/II/III/IV Vs healthy scripts are accessible in the [cancer_vs_healthy subfolder](https://github.com/Leah31115/hcc_biomarker_identifier/tree/main/DGEA/cancer_vs_healthy).
 
-Paired TCGA samples used healthy and solid tissue normal (STN) samples. Samples were paired by TCGA ID using the following script. All paired samples were subject to DGEA using this script.
+The paired samples PCA plot was generated using [2025-06-10_paired_TCGA_deseq.R](https://github.com/Leah31115/hcc_biomarker_identifier/blob/main/DGEA/paired_TCGA/2025-06-10_paired_TCGA_deseq.R) which identified a sample pair needed for removal. Thus the [2025-07-24_paired_tcga_deseq_removed_sample.R](https://github.com/Leah31115/hcc_biomarker_identifier/blob/main/DGEA/paired_TCGA/2025-07-24_paired_tcga_deseq_removed_sample.R) script runs DGEA with the undesired sample pair removed.
 
-Cancer stage (II/III/IV) Vs Stage (IV) and Advanced HCC (Stage II-IV) Vs Stage I scripts are accessible in this folder. 
+Cancer stage (II/III/IV) Vs Stage (IV) and Advanced HCC (Stage II-IV) Vs Stage I scripts are accessible in the [cancer_stage_vs_stage](https://github.com/Leah31115/hcc_biomarker_identifier/tree/main/DGEA/cancer_stage_vs_stage) subfolder. 
 
-Significant and differential genes expressed (DGE) were compared from all DGEAs above and represented by bargraphs using this script
-
-## Top differential genes expressed (DGE)
-From all of the DGEAs (here), the top 5 DGEs were filtered for their up/down-regulation and their p-values here. 
+Significant and differential genes expressed (DGE) were compared from all DGEAs above and represented by bargraphs using the [2025-08-18_bar_graph_significance.R](https://github.com/Leah31115/hcc_biomarker_identifier/blob/main/DGEA/quantity_of_all_DGEA_significant_genes/2025-08-18_bar_graph_significance.R) script.
 
 ## Survival analysis
-Survival data for TCGA cancer samples was downloaded from UCSC Xena [here](https://xenabrowser.net/datapages/?dataset=survival%2FLIHC_survival.txt&host=https%3A%2F%2Ftcga.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) (file LIHC_survival.txt, version 2018-09-13, 23 KB)
+Survival data for TCGA cancer samples was downloaded from UCSC Xena [here](https://xenabrowser.net/datapages/?dataset=survival%2FLIHC_survival.txt&host=https%3A%2F%2Ftcga.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) (file LIHC_survival.txt, version 2018-09-13, 23 KB). All survival analysis scripts are located in the [survival_analysis](https://github.com/Leah31115/hcc_biomarker_identifier/tree/main/survival_analysis) folder.
 
 ### Univariate Kaplan-Meier Curves
-Code was provided by Dr Heshmat Borhani to investigate DSS, overall survival and progression free interval (PFI).
+Code was provided by Dr Heshmat Borhani to investigate DSS, overall survival and progression free interval (PFI). Scripts to generate survival plots for genes of interest located in the [univariate_KM_curves](https://github.com/Leah31115/hcc_biomarker_identifier/tree/main/survival_analysis/univariate_KM_curves) subfolder.
 
 ### Multivariate forest plots
 Multivariate analysis of the pseudogenes and their parent protein coding genes were investigated for their association with DSS using forest plots. 
 
-Protein coding genes with multiple transcript isoforms were investigated for their effect on DSS. Healthy and cancer gene isoforms were obtained from the TCGA TARGET GTEx hub via UCSC Xena [here](https://xenabrowser.net/datapages/?dataset=TcgaTargetGtex_rsem_isoform_tpm&host=https%3A%2F%2Ftoil.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) (TcgaTargetGtex_rsem_isoform_tpm.gz, version 2016-09-02, 4.16 GB). Since this file was large (GB), the University of Nottingham's High Performance Computer (HPC) Ada was used to filter for used samples via Ubuntu. Used samples were obtained using the script XXXXXXXXX. Conda for linux can be downloaded [here](https://docs.conda.io/projects/conda/en/stable/user-guide/install/linux.html). 
+Protein coding genes with multiple transcript isoforms were investigated for their effect on DSS. Healthy and cancer gene isoforms were obtained from the TCGA TARGET GTEx hub via UCSC Xena [here](https://xenabrowser.net/datapages/?dataset=TcgaTargetGtex_rsem_isoform_tpm&host=https%3A%2F%2Ftoil.xenahubs.net&removeHub=https%3A%2F%2Fxena.treehouse.gi.ucsc.edu%3A443) (TcgaTargetGtex_rsem_isoform_tpm.gz, version 2016-09-02, 4.16 GB). Since this file was large (GB), the University of Nottingham's High Performance Computer (HPC) Ada was used to filter for used samples via Ubuntu. Conda for linux can be downloaded [here](https://docs.conda.io/projects/conda/en/stable/user-guide/install/linux.html). 
 First the used samples file was uploaded from the local computer to the HPC
 ```bash
 scp my_work_dir/used_samples.txt ada:/gpfs01/home/mbyle1/LIFE4137/splice/
@@ -136,11 +135,13 @@ The filered isoform counts were downloaded to the local computer using the follo
 scp ada:/gpfs01/home/mbyle1/LIFE4137/splice/isoform_counts.txt" ./
 ```
 
-These isoforms were filtered for genes of interest using this script. The file from the filtered genes script was then used to peform survival analysis of isoforms from genes of interest. These scripts are located in this folder.
+These isoforms were filtered for genes of interest using this script. The file from the filtered genes script was then used to peform survival analysis of isoforms from genes of interest. These scripts are located in the folder [transcript_isoforms](https://github.com/Leah31115/hcc_biomarker_identifier/tree/main/survival_analysis/multivariate_forest_plots/transcript_isoforms) subfolder within the multivariate_forest_plots folder.
+
+Forest plots were also generated for the pseudogenes identified within the top 5 DEGs from all DGEAs, where any other significant pseudogene relative and its parent gene were included within the analysis. These scripts are located within the [pseudogenes](https://github.com/Leah31115/hcc_biomarker_identifier/tree/main/survival_analysis/multivariate_forest_plots/pseudogenes) subfolder within the multivariate_forest_plots folder.
 
 
 # Acknowledgements
-I would like to thank Dr Heshmat Borhani for providing univariate Kaplan-Meier curve survival analysis code.
+I would like to thank Dr Heshmat Borhani for providing univariate Kaplan-Meier curve survival analysis code. I thank Thomas Mclaughlin and Areeba Salman for our great teamwork when working on our past group project together in which some of the collaborated code could be used and expanded upon within this independent research project.
 
 # References
-mousepixel (2022) Github. sanbomics_scripts. Available at: https://github.com/mousepixels/sanbomics_scripts/blob/main/GO_in_R.Rmd [Accessed 30/08/2025]
+- mousepixel (2022) Github. sanbomics_scripts. Available at: https://github.com/mousepixels/sanbomics_scripts/blob/main/GO_in_R.Rmd [Accessed 30/08/2025]
